@@ -1,0 +1,80 @@
+-- spawns tanks from side of screen
+function init(self)
+	self.interval = 5
+	self.spawned = false
+	self.delay = timer.delay(self.interval, true, function(self, handle, time_elapsed)
+		local w = window.get_size()
+		local side = rnd.range(0, 1)
+		if side == 0 then
+			side = -30
+		else
+			side = w + 30
+		end
+		local y = rnd.range(375, 1600)
+		go.set_position(vmath.vector3(side, y, 0), "/tank_spawn")
+		-- spawns enemies in random intervals
+		if souls_mode then
+			for i = 1, rnd.range(1, 3) do
+				local souls = timer.delay(rnd.range(0, 1), false, function(self, handle, time_elapsed)
+					if self.spawned then
+						self.spawned = false
+						factory.create("#tank")
+						self.spawned = true
+					end
+				end)
+			end
+		end
+		self.time = rnd.range(1, 5)
+		self.spawn = timer.delay(self.time, false, function(self, handle, time_elapsed)
+			if self.spawned then
+				-- not sure if this is necessary, remove if deemed undecessary
+				self.spawned = false
+				factory.create("#tank")
+				self.spawned = true
+			end
+		end)
+	end)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- allows spawner to be toggled on and off
+	if message_id == hash("toggle") then self.spawned = message.status end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

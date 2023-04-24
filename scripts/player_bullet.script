@@ -1,0 +1,22 @@
+function init(self)
+	-- set direction vector with y = 1 (up)
+	self.dir = vmath.vector3(0, 1, 0)
+	self.speed = 512
+end
+
+function update(self, dt)
+	-- set position based on direction vector and speed
+	local p = go.get_position()
+	go.set_position(p + self.dir * self.speed * dt)
+	-- delete if the player dies
+	if not player_is_alive then go.delete() end
+	if go.get_position().y >= 1920 then go.delete() end
+end
+
+function on_message(self, message_id, message, sender)
+	-- delete if the bullet object collides with an enemy
+	if message_id == hash("collision_response") then
+		msg.post("/sound_handler#air_enemy_killed", "play_sound")
+		go.delete()
+	end
+end

@@ -1,0 +1,41 @@
+function init(self)
+	-- sets values to calculate trajectory to player object
+	local w, h = window.get_size()
+	local p = go.get_position()
+	local player_pos = go.get_position("/player")
+	local x = player_pos.x - p.x
+	local y = player_pos.y - p.y
+	x = x / 100
+	x = math.floor(x + 0.5)
+	y = y / 100
+	y = math.floor(y + 0.5)
+	x = x / 10
+	y = y / 10
+	self.dir = vmath.vector3(x, y, 0)
+	-- sets bounds to delete the bullet if it goes offscreen
+	self.left_bound = -50
+	self.right_bound = w + 50
+	self.up_bound = h + 50
+	self.down_bound = -50
+	self.speed = 460
+end
+
+function update(self, dt)
+	-- updates position based on self.dir (direction vector)
+	if vmath.length_sqr(self.dir) > 0 and not janky_mode then self.dir = vmath.normalize(self.dir) end
+	local p = go.get_position()
+	go.set_position(p + self.dir * self.speed * dt)
+	-- delete bullet if player dies
+	if not player_is_alive then go.delete() end
+	-- deletes bullet if it goes offscreen (past bound values)
+	if go.get_position().x < self.left_bound or go.get_position().x > self.right_bound then
+		go.delete()
+	elseif go.get_position().y > self.up_bound or go.get_position().y < self.down_bound then
+		go.delete()
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- delete bullet if it collides with player
+	if message_id == hash("collision_response") then go.delete() end
+end

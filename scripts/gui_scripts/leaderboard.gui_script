@@ -1,0 +1,92 @@
+local white = vmath.vector4(1, 1, 1, 1)
+local yellow = vmath.vector4(1, 0.95, 0, 1)
+-- tables (lists) to work with the AP function
+local scores = {10000, 7500, 5000, 2500, 1000}
+local initials = {"ADZ", "AMJ", "LUA", "ARC", "ASM"}
+-- AP function to update the leaderboard screen based on the player's earned score
+function update_board(self, score)
+	-- set a variable for place value
+	local place = 0
+	-- iterate through scores table (list)
+	for i = 1, #scores do
+		-- if player's earned score is equal to or higher than the current iterting score
+		if score >= scores[i] then
+			-- set place
+			place = i
+			-- to make sure player can't type if they didn't earn a high score
+			self.highscore = true
+			self.label = gui.get_node("score" .. i)
+			-- iterate backwards through the lower part of the table and shift each element down
+			for j = #scores, i, -1 do
+				scores[j + 1] = scores[j]
+				initials[j + 1] = initials[j]
+			end
+			scores[i] = score
+			break
+		end
+	end
+	-- get rid of the ends of the table left over from shifting elements down
+	scores[6], initials[6] = nil, nil
+	-- iterate through and update the visual leaderboard screen based on changed table values
+	for i = 1, #scores do
+		local label = gui.get_node("score" .. i)
+		if i ~= place then
+			gui.set_text(label, write_score(scores[i]) .. initials[i])
+		else
+			gui.set_text(label, write_score(score) .. "   ")
+			gui.set_color(label, yellow)
+		end
+	end
+	msg.post("/screen#screen_handler", "change_min_score", {score = scores[5]})
+	self.score = score
+	self.place = place
+end
+-- generate a string so the score fits in the leaderboard properly
+function write_score(score)
+	if #tostring(score) == 4 then
+		return "  " .. score .. "       "
+	elseif #tostring(score) == 5 then
+		return " " .. score .. "        "
+	else
+		return score .. "       "
+	end
+end
+
+function init(self)
+	self.score = 0
+	self.chars = 0
+	self.place = 0
+	self.highscore = false
+	self.initials = "   "
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_board") then
+		update_board(self, message.score)
+		local label = gui.get_node("message")
+		gui.set_text(label, "Congratulations on " .. self.place .. " place!")
+	end
+end
+-- typing initials, limited to 3
+function on_input(self, action_id, action)
+	if action_id == hash("text") and self.highscore and action.text ~= " " then
+		-- set self.chars so the user can only type 3 initials
+		self.chars = self.chars + 1
+		self.initials = string.gsub(self.initials, " ", string.upper(action.text), 1)
+		-- set values based on initials
+		if self.chars == 3 then self.highscore = false; initials[self.place] = self.initials end
+		-- update the visual screen
+		gui.set_text(self.label, write_score(self.score) .. self.initials)
+	elseif action_id == hash("start") and not self.highscore and action.pressed then
+		-- reset values and send messages to restart the state of the game, without changing the tables
+		gui.set_color(self.label, white)
+		self.score = 0
+		self.chars = 0
+		self.place = 0
+		self.highscore = false
+		self.initials = "   "
+		msg.post("/screen#screen_handler", "reset")
+		msg.post("#", "disable")
+		msg.post(".", "release_input_focus")
+	end
+end

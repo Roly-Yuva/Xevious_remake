@@ -1,0 +1,32 @@
+function init(self)
+	local echo = gui.get_node("echo")
+	gui.set_enabled(echo, false)
+	self.score = 0
+	-- enemy spawning values
+	self.tank = false
+end
+
+function update(self, dt)
+	if self.score >= 500 and not self.tank then
+		msg.post("/tank_spawn#tank_spawn", "toggle", {status = true})
+		self.tank = true
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- updates the score value displayed on screen
+	if message_id == hash("points") then
+		self.score = self.score + message.points
+		if self.score >= 1000000 then
+			local points = self.score - 1000000
+			self.score = points
+		end
+		local label = gui.get_node("score")
+		gui.set_text(label, "Score\n" .. tostring(self.score))
+	-- resets values if game resets
+	elseif message_id == hash("reset") then
+		self.score = 0
+		local label = gui.get_node("score")
+		gui.set_text(label, "Score\n0")
+	end
+end
