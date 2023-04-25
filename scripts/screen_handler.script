@@ -22,6 +22,7 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("game_over") then
 		-- displays game_over screen on a 3 (2) second timer, then displays leaderboard once that is done
 		msg.post(".", "release_input_focus")
+		msg.post("/crosshair_echo", "disable")
 		msg.post("#game", "disable")
 		msg.post("#game_over", "enable")
 		local game_over_timer = timer.delay(2, false, function(self, handle, time_elapsed)

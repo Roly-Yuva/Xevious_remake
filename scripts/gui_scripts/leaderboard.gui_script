@@ -2,7 +2,7 @@ local white = vmath.vector4(1, 1, 1, 1)
 local yellow = vmath.vector4(1, 0.95, 0, 1)
 -- tables (lists) to work with the AP function
 local scores = {10000, 7500, 5000, 2500, 1000}
-local initials = {"ADZ", "AMJ", "LUA", "ARC", "ASM"}
+local initials = {"...", "...", "...", "...", "..."}
 -- AP function to update the leaderboard screen based on the player's earned score
 function update_board(self, score)
 	-- set a variable for place value

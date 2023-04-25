@@ -26,6 +26,7 @@ function on_message(self, message_id, message, sender)
 	-- resets values if game resets
 	elseif message_id == hash("reset") then
 		self.score = 0
+		self.tank = false
 		local label = gui.get_node("score")
 		gui.set_text(label, "Score\n0")
 	end

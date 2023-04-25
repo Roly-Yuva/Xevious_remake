@@ -13,6 +13,7 @@ function init(self)
 	local side
 	if go.get_position().x < 720 then
 		side = 1
+		go.set_rotation(vmath.quat_rotation_z(math.pi))
 	else
 		side = -1
 	end

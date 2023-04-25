@@ -5,6 +5,8 @@ difficulty = 1
 function defeat(self)
 	-- death sound
 	msg.post("/sound_handler#player_defeat", "play_sound")
+	msg.post("#crosshair", "play_animation", {id = hash("player_crosshair")})
+	self.bomb_cooldown = false
 	if player_is_alive then
 		-- local wait = timer.delay(2, false, function(self, handle, time_elapsed)
 			msg.post("/screen#screen_handler", "game_over", {score = self.score})
