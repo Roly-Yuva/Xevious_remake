@@ -11,6 +11,11 @@ function final(self)
 end
 
 function update(self, dt)
+	if not janky_mode then
+		self.speed = 460
+	else
+		self.speed = 580
+	end
 	local p = go.get_position()
 	if p.y >= self.og then
 		go.delete()

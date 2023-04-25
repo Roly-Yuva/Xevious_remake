@@ -17,7 +17,13 @@ function init(self)
 	else
 		side = -1
 	end
-	local delay = rnd.range(3, 5)
+	local delay
+	if not janky_mode then
+		delay = rnd.range(3, 5)
+	else
+		-- delay = rnd.range(2, 4)
+		delay = 0
+	end
 	self.points = 150
 	self.speed = 120
 	self.dir = vmath.vector3(side, 0, 0)
@@ -36,8 +42,9 @@ end
 function update(self, dt)
 	-- move based on current position, direction, and speed, and delete when gunner instance goes off screen
 	local p = go.get_position()
+	local w = window.get_size()
 	go.set_position(p + self.dir * self.speed * dt)
-	if go.get_position().y <= -60 or not player_is_alive then go.delete() end
+	if go.get_position().x <= -30 or go.get_position().x >= w + 30 or not player_is_alive then go.delete() end
 	if janky_mode then
 		self.speed = rnd.range(60, 760)
 	end
