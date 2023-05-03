@@ -44,6 +44,7 @@ embedded_components {
   "group: \"player\"\n"
   "mask: \"air_enemy\"\n"
   "mask: \"enemy_bullet\"\n"
+  "mask: \"warper_bullet\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
@@ -201,6 +202,7 @@ embedded_components {
   type: "factory"
   data: "prototype: \"/main/objects/player_bullet.go\"\n"
   "load_dynamically: false\n"
+  "dynamic_prototype: false\n"
   ""
   position {
     x: 0.0
@@ -239,6 +241,7 @@ embedded_components {
   type: "factory"
   data: "prototype: \"/main/objects/player_bomb.go\"\n"
   "load_dynamically: false\n"
+  "dynamic_prototype: false\n"
   ""
   position {
     x: 0.0
