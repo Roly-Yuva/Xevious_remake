@@ -1,3 +1,5 @@
+local xevi = require "scripts/modules.xevi"
+
 local function kill(self)
 	self.alive = false
 	local points = self.points
@@ -9,7 +11,8 @@ local function kill(self)
 end
 
 function init(self)
-	-- set direction vector, with y = -1 (down)
+	-- set direction vector
+	msg.post("/tank_spawn", "affirm_position", {y = go.get_position().y})
 	local side
 	if go.get_position().x < 720 then
 		side = 1
@@ -29,7 +32,9 @@ function init(self)
 	self.dir = vmath.vector3(side, 0, 0)
 	self.alive = true
 	self.shoot = timer.delay(delay, true, function(self, handle, time_elapsed)
-		factory.create("#factory", go.get_position())
+		if not xevi.check_proximity(go.get_position(), go.get_position("/player"), 150) then
+			factory.create("#factory", go.get_position())
+		end
 	end)
 end
 
@@ -44,7 +49,10 @@ function update(self, dt)
 	local p = go.get_position()
 	local w = window.get_size()
 	go.set_position(p + self.dir * self.speed * dt)
-	if go.get_position().x <= -30 or go.get_position().x >= w + 30 or not player_is_alive then go.delete() end
+	if go.get_position().x <= -50 or go.get_position().x >= w + 50 or not player_is_alive then
+		msg.post("/tank_spawn", "free_position", {y = go.get_position().y})
+		go.delete()
+	end
 	if janky_mode then
 		self.speed = rnd.range(60, 760)
 	end
@@ -60,6 +68,7 @@ end
 
 function on_message(self, message_id, message, sender)
 	if message_id == hash("bombed") and self.alive then
+		msg.post("/tank_spawn", "free_position", {y = go.get_position().y})
 		kill(self)
 	end
 end

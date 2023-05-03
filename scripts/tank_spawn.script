@@ -1,3 +1,4 @@
+local taken_positions = {1800}
 -- spawns tanks from side of screen
 function init(self)
 	self.interval = 5
@@ -6,11 +7,23 @@ function init(self)
 		local w = window.get_size()
 		local side = rnd.range(0, 1)
 		if side == 0 then
-			side = -30
+			side = -50
 		else
-			side = w + 30
+			side = w + 50
 		end
-		local y = rnd.range(375, 1600)
+		local y
+		local y_good = false
+		repeat
+			y = rnd.range(375, 1600)
+			for i = 1, #taken_positions do
+				if y <= taken_positions[i] - 100 or y >= taken_positions[i] + 100 then
+					y_good = true
+				else
+					y_good = false
+					break
+				end
+			end
+		until y_good
 		go.set_position(vmath.vector3(side, y, 0), "/tank_spawn")
 		-- spawns enemies in random intervals
 		if souls_mode then
@@ -58,7 +71,18 @@ end
 
 function on_message(self, message_id, message, sender)
 	-- allows spawner to be toggled on and off
-	if message_id == hash("toggle") then self.spawned = message.status end
+	if message_id == hash("toggle") then
+		self.spawned = message.status
+	elseif message_id == hash("affirm_position") then
+		taken_positions[#taken_positions + 1] = message.y
+	elseif message_id == hash("free_position") then
+		for i = 1, #taken_positions do
+			if taken_positions[i] == message.y then
+				table.remove(taken_positions, i)
+			end
+		end
+	end
+	pprint(taken_positions)
 end
 
 function on_input(self, action_id, action)
