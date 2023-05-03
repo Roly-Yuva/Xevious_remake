@@ -14,7 +14,11 @@ function init(self)
 				local souls = timer.delay(rnd.range(0, 1), false, function(self, handle, time_elapsed)
 					if self.spawned then
 						self.spawned = false
-						factory.create("#gunner")
+						if difficulty >= 10 and rnd.range(1, 10) == 1 then
+							factory.create("#warper")
+						else
+							factory.create("#gunner")
+						end
 						self.spawned = true
 					end
 				end)
@@ -25,7 +29,11 @@ function init(self)
 			if self.spawned then
 				-- not sure if this is necessary, remove if deemed undecessary
 				self.spawned = false
-				factory.create("#gunner")
+				if difficulty >= 10 and rnd.range(1, 10) == 1 then
+					factory.create("#warper")
+				else
+					factory.create("#gunner")
+				end
 				self.spawned = true
 			end
 		end)

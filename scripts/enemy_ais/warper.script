@@ -1,0 +1,44 @@
+-- update point values and destroy gunner instance when kill() runs, and plays death sound
+local function kill(self)
+	-- death sound
+	self.alive = false
+	local points = self.points
+	-- making sure points value doesn't accidentally go over
+	if not player_is_alive then self.points = 0 end
+	msg.post("/player", "points", {points = self.points})
+	msg.post("/screen#game", "points", {points = self.points})
+	self.points = points
+	go.delete()
+end
+
+function init(self)
+	-- set direction vector, with y = -1 (down)
+	self.points = 200
+	self.speed = 120
+	self.dir = vmath.vector3(0, -1, 0)
+	self.alive = true
+	self.shoot = timer.delay(3, true, function(self, handle, time_elapsed)
+		local p = go.get_position()
+		p.y = p.y - 80
+		factory.create("#factory", p)
+	end)
+end
+
+function update(self, dt)
+	-- move based on current position, direction, and speed, and delete when gunner instance goes off screen
+	local p = go.get_position()
+	go.set_position(p + self.dir * self.speed * dt)
+	if go.get_position().y <= -60 or not player_is_alive then go.delete() end
+end
+
+function on_message(self, message_id, message, sender)
+	-- kill gunner instance on collision with player or player bullet
+	if message_id == hash("collision_response") and self.alive then
+		-- this is done so that enemies can't spawn overlapped; they are deleted if they do
+		-- if message.other_group == hash("air_enemy") then
+			-- go.delete()
+		-- else
+			kill(self)
+		-- end
+	end
+end
