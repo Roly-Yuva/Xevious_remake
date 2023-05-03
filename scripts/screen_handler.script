@@ -10,6 +10,7 @@ function init(self)
 	msg.post("#game", "disable")
 	msg.post("#game_over", "disable")
 	msg.post("#leaderboard", "disable")
+	msg.post("/crosshair_echo", "disable")
 	msg.post(".", "reset")
 end
 
@@ -37,6 +38,7 @@ function on_message(self, message_id, message, sender)
 		end)
 	elseif message_id == hash("reset") then
 		player_is_alive = true
+		difficulty = 1
 		self.start = true
 		msg.post("#start", "enable")
 		msg.post("/screen#game", "reset")

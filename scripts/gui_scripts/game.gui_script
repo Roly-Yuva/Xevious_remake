@@ -1,12 +1,16 @@
 function init(self)
-	local echo = gui.get_node("echo")
-	gui.set_enabled(echo, false)
 	self.score = 0
 	-- enemy spawning values
 	self.tank = false
 end
 
 function update(self, dt)
+	local int_value = math.floor((self.score / 100) + 0.5)
+	if int_value < 1 then
+		difficulty = 1
+	else
+		difficulty = int_value
+	end
 	if self.score >= 500 and not self.tank then
 		msg.post("/tank_spawn#tank_spawn", "toggle", {status = true})
 		self.tank = true
