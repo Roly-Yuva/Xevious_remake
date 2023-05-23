@@ -16,7 +16,9 @@ end
 function on_message(self, message_id, message, sender)
 	-- delete if the bullet object collides with an enemy
 	if message_id == hash("collision_response") then
-		msg.post("/sound_handler#air_enemy_killed", "play_sound")
-		go.delete()
+		if not (message.other_group == hash("fire")) then
+			msg.post("/sound_handler#air_enemy_killed", "play_sound")
+			go.delete()
+		end
 	end
 end

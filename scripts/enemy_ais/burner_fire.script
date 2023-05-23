@@ -1,0 +1,19 @@
+function init(self)
+	self.speed = 120
+	self.dir = vmath.vector3(0, -1, 0)
+	self.delay = timer.delay(4, false, function(self, handle, time_elapsed)
+		go.delete()
+	end)
+end
+
+function update(self, dt)
+	local p = go.get_position()
+	go.set_position(p + self.dir * self.speed * dt)
+	if not player_is_alive then go.delete() end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("collision_response") and message.other_group == hash("player_bullet") then
+		go.delete()
+	end
+end

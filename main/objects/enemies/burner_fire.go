@@ -1,6 +1,6 @@
 components {
-  id: "player_bullet"
-  component: "/scripts/player_bullet.script"
+  id: "burner_fire"
+  component: "/scripts/enemy_ais/burner_fire.script"
   position {
     x: 0.0
     y: 0.0
@@ -16,8 +16,8 @@ components {
 embedded_components {
   id: "sprite"
   type: "sprite"
-  data: "tile_set: \"/assets/atlases/player_projectiles.atlas\"\n"
-  "default_animation: \"player_bullet\"\n"
+  data: "tile_set: \"/assets/atlases/fire_stream.atlas\"\n"
+  "default_animation: \"stream\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
   ""
@@ -32,6 +32,11 @@ embedded_components {
     z: 0.0
     w: 1.0
   }
+  scale {
+    x: 1.0
+    y: 5.0
+    z: 1.0
+  }
 }
 embedded_components {
   id: "collisionobject"
@@ -41,15 +46,14 @@ embedded_components {
   "mass: 0.0\n"
   "friction: 0.0\n"
   "restitution: 0.0\n"
-  "group: \"player_bullet\"\n"
-  "mask: \"air_enemy\"\n"
-  "mask: \"fire\"\n"
+  "group: \"enemy_bullet\"\n"
+  "mask: \"player\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
   "    position {\n"
-  "      x: -16.0\n"
-  "      y: 0.0\n"
+  "      x: 0.0\n"
+  "      y: -10.0\n"
   "      z: 0.0\n"
   "    }\n"
   "    rotation {\n"
@@ -61,11 +65,43 @@ embedded_components {
   "    index: 0\n"
   "    count: 3\n"
   "  }\n"
+  "  data: 11.0\n"
+  "  data: 110.0\n"
+  "  data: 10.0\n"
+  "}\n"
+  "linear_damping: 0.0\n"
+  "angular_damping: 0.0\n"
+  "locked_rotation: false\n"
+  "bullet: false\n"
+  ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+}
+embedded_components {
+  id: "kill_stream"
+  type: "collisionobject"
+  data: "collision_shape: \"\"\n"
+  "type: COLLISION_OBJECT_TYPE_KINEMATIC\n"
+  "mass: 0.0\n"
+  "friction: 0.0\n"
+  "restitution: 0.0\n"
+  "group: \"fire\"\n"
+  "mask: \"player_bullet\"\n"
+  "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
   "    position {\n"
-  "      x: 16.0\n"
-  "      y: 0.0\n"
+  "      x: 0.0\n"
+  "      y: -119.0\n"
   "      z: 0.0\n"
   "    }\n"
   "    rotation {\n"
@@ -74,14 +110,11 @@ embedded_components {
   "      z: 0.0\n"
   "      w: 1.0\n"
   "    }\n"
-  "    index: 3\n"
+  "    index: 0\n"
   "    count: 3\n"
   "  }\n"
-  "  data: 8.0315\n"
-  "  data: 8.068\n"
-  "  data: 10.0\n"
-  "  data: 8.0315\n"
-  "  data: 8.068\n"
+  "  data: 74.0\n"
+  "  data: 1.0\n"
   "  data: 10.0\n"
   "}\n"
   "linear_damping: 0.0\n"

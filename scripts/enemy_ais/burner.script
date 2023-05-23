@@ -1,0 +1,76 @@
+local function kill(self)
+	-- death sound
+	self.alive = false
+	local points = self.points
+	-- making sure points value doesn't accidentally go over
+	if not player_is_alive then self.points = 0 end
+	msg.post("/player", "points", {points = self.points})
+	msg.post("/screen#game", "points", {points = self.points})
+	self.points = points
+	go.delete()
+end
+
+function init(self)
+	self.points = 200
+	self.speed = 120
+	self.dir = vmath.vector3(0, -1, 0)
+	self.alive = true
+	self.stream = false
+	self.fire = timer.delay(4, true, function(self, handle, time_elapsed)
+		self.stream = not self.stream
+		if self.stream then
+			local p = go.get_position()
+			factory.create("#factory", vmath.vector3(p.x, p.y - 182, 0), vmath.quat_rotation_z(math.pi))
+		end
+	end)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	local p = go.get_position()
+	go.set_position(p + self.dir * self.speed * dt)
+	if go.get_position().y <= -80 or not player_is_alive then go.delete() end
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("collision_response") and self.alive then
+		-- this is done so that enemies can't spawn overlapped; they are deleted if they do
+		if message.other_group == hash("air_enemy") then
+			go.delete()
+		else
+			kill(self)
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
