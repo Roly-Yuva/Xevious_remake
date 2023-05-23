@@ -16,7 +16,7 @@ function init(self)
 		repeat
 			y = rnd.range(375, 1600)
 			for i = 1, #taken_positions do
-				if y <= taken_positions[i] - 100 or y >= taken_positions[i] + 100 then
+				if (y <= taken_positions[i] - 100) or (y >= taken_positions[i] + 100) then
 					y_good = true
 				else
 					y_good = false

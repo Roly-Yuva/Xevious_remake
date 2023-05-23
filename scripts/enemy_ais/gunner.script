@@ -27,10 +27,12 @@ function init(self)
 	self.speed = 160
 	self.dir = vmath.vector3(0, -1, 0)
 	self.alive = true
-	self.shoot = timer.delay(delay, true, function(self, handle, time_elapsed)
-		local p = go.get_position()
-		p.y = p.y - 80
-		factory.create("#factory", p)
+	local shoot_delay = timer.delay(1, false, function(self, handle, time_elapsed)
+		self.shoot = timer.delay(delay, true, function(self, handle, time_elapsed)
+			local p = go.get_position()
+			p.y = p.y - 80
+			factory.create("#factory", p)
+		end)
 	end)
 end
 
