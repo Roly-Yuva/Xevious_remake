@@ -33,7 +33,7 @@ end
 
 function on_message(self, message_id, message, sender)
 	-- kill gunner instance on collision with player or player bullet
-	if message_id == hash("collision_response") and self.alive then
+	if message_id == hash("collision_response") and message.other_group ~= hash("air_enemy") and self.alive then
 		-- this is done so that enemies can't spawn overlapped; they are deleted if they do
 		-- if message.other_group == hash("air_enemy") then
 			-- go.delete()
