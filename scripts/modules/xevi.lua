@@ -20,4 +20,12 @@ M.check_proximity = function(object_pos, point, distance)
 	return x_check and y_check
 end
 
+M.calculate_trajectory = function(object_pos, point)
+	local x = point.x - object_pos.x
+	local y = point.y - object_pos.y
+	x = math.floor((x / 100) + 0.5) / 10
+	y = math.floor((y / 100) + 0.5) / 10
+	return vmath.vector3(x, y, 0)
+end
+
 return M
