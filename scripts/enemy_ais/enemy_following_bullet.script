@@ -1,3 +1,5 @@
+local xevi = require "scripts/modules.xevi"
+
 function init(self)
 	-- sets bounds to delete the bullet if it goes offscreen
 	local w, h = window.get_size()
@@ -18,15 +20,7 @@ function update(self, dt)
 	-- sets values to calculate trajectory to player object
 	local p = go.get_position()
 	local player_pos = go.get_position("/player")
-	local x = player_pos.x - p.x
-	local y = player_pos.y - p.y
-	x = x / 100
-	x = math.floor(x + 0.5)
-	y = y / 100
-	y = math.floor(y + 0.5)
-	x = x / 10
-	y = y / 10
-	self.dir = vmath.vector3(x, y, 0)
+	self.dir = xevi.calculate_trajectory(p, player_pos)
 	-- updates position based on self.dir (direction vector)
 	if vmath.length_sqr(self.dir) > 0 and not janky_mode then self.dir = vmath.normalize(self.dir) end
 	local p = go.get_position()
